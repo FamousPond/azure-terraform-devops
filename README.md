@@ -1,0 +1,1 @@
+This repository is for training myself on how to use Azure GitOps pipelines to use Terraform to deploy infrastructure to Azure.  
