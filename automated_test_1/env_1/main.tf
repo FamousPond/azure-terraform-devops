@@ -37,5 +37,5 @@ resource "azurerm_virtual_network" "test_vnet" {
 
 # Outputs
 output "virtual_network_id" {
-  value = azurerm_virtual_network.test_vnet.id
+  value = azurerm_virtual_network.test_vneet.id
 }
