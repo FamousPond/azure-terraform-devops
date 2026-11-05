@@ -20,13 +20,9 @@ stages:
       - job: Validate
         displayName: 'Validates Terraform'
         steps:
-          - checkout: self
-            displayName: 'Checkout repo'
-
-          - task: TerraformInstaller@1
-            displayName: 'Installs Terraform'
-            inputs:
-              terraformVersion: '$(terraformVersion)'
+          - template: templates/setup.yml
+            parameters:
+              runInit: false
 
           - script: terraform fmt -check -recursive
             displayName: 'Format Terraform'
@@ -48,24 +44,7 @@ stages:
       - job: Plan
         displayName: 'Plan Terraform'
         steps:
-          - checkout: self
-            displayName: 'Checkout repo'
-
-          - task: TerraformInstaller@1
-            displayName: 'Installs Terraform'
-            inputs:
-              terraformVersion: '$(terraformVersion)'
-
-          - task: TerraformTask@5
-            displayName: 'Terraform Init'
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              backendServiceArm: $(ServiceConnection)
-              backendAzureRmStorageAccountName: $(StorageAccountName)
-              backendAzureRmContainerName: $(ContainerName)
-              backendAzureRmKey: $(StateFile)
-              workingDirectory: $(terraformDirectory)
+          - template: templates/setup.yml
 
           - task: TerraformTask@5
             displayName: 'Terraform Plan'
@@ -98,28 +77,11 @@ stages:
           runOnce:
             deploy:
               steps:
-                - checkout: self
-                  displayName: 'Checkout repo'
-
-                - task: TerraformInstaller@1
-                  displayName: 'Installs Terraform'
-                  inputs:
-                    terraformVersion: '$(terraformVersion)'
+                - template: templates/setup.yml
 
                 - download: current
                   displayName: 'Download plan'
                   artifact: tfplan
-
-                - task: TerraformTask@5
-                  displayName: 'Terraform Init'
-                  inputs:
-                    provider: 'azurerm'
-                    command: 'init'
-                    backendServiceArm: $(ServiceConnection)
-                    backendAzureRmStorageAccountName: $(StorageAccountName)
-                    backendAzureRmContainerName: $(ContainerName)
-                    backendAzureRmKey: $(StateFile)
-                    workingDirectory: $(terraformDirectory)
 
                 - task: TerraformTask@5
                   displayName: 'Terraform Apply'
