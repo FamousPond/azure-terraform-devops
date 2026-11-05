@@ -61,7 +61,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendServiceArm: 'sc-azure-tf-dev'
+              backendServiceArm: 'sc-azure-tf-dav'
               backendAzureRmStorageAccountName: 'tfstore1126'
               backendAzureRmContainerName: 'tfstate1'
               backendAzureRmKey: 'dev.tfstate'
@@ -73,7 +73,7 @@ stages:
               provider: 'azurerm'
               command: 'plan'
               commandOptions: '-input=false -out=tfplan'
-              environmentServiceNameAzureRM: 'sc-azure-tf-dev'
+              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
               workingDirectory: $(terraformDirectory)
 
           - script: terraform show -no-color tfplan > $(Build.ArtifactStagingDirectory)/tfplan.txt
