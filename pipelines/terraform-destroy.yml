@@ -29,6 +29,7 @@ stages:
           - bash: |
               if [ "{{ parameters.destroy }}" != "DESTROY" ]; then
                 echo "You need to write DESTROY to destroy deployment"
+                exit 1
               fi
             displayName: 'Check destroy confirmation'
 
