@@ -14,10 +14,7 @@ pool:
 
 variables:
   - group: tf-azure-training-vars
-  - name: terraformVersion
-    value: '1.17.1'
-  - name: terraformDirectory
-    value: 'automated_test_1/env_1'
+  - template: variables.yml
 
 stages:
   - stage: Destroy
@@ -33,24 +30,7 @@ stages:
               fi
             displayName: 'Check destroy confirmation'
 
-          - checkout: self
-            displayName: 'Checkout repo'
-
-          - task: TerraformInstaller@1
-            displayName: 'Installs Terraform'
-            inputs:
-              terraformVersion: '$(terraformVersion)'
-
-          - task: TerraformTask@5
-            displayName: 'Terraform Init'
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              backendServiceArm: 'sc-azure-tf-dav'
-              backendAzureRmStorageAccountName: 'tfstore1126'
-              backendAzureRmContainerName: 'tfstate1'
-              backendAzureRmKey: 'dev.tfstate'
-              workingDirectory: $(terraformDirectory)
+          - template: templates/setup.yml
 
           - task: TerraformTask@5
             displayName: 'Terraform Plan'
@@ -58,7 +38,7 @@ stages:
               provider: 'azurerm'
               command: 'plan'
               commandOptions: '-destroy -input=false -out=tfplan'
-              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+              environmentServiceNameAzureRM: $(ServiceConnection)
               workingDirectory: $(terraformDirectory)
             env:
               TF_VAR_test_vnet_name: $(testVNetName)
@@ -69,5 +49,5 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               commandOptions: '-input=false tfplan'
-              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+              environmentServiceNameAzureRM: $(ServiceConnection)
               workingDirectory: $(terraformDirectory)

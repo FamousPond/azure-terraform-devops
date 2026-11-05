@@ -1,0 +1,39 @@
+# Template checks out the repo, downloads terraform and runs terraform init.
+# Each of these are toggleable though through parameters
+
+parameters:
+  - name: checkout
+    type: boolean
+    default: true
+
+  - name: installTerraform
+    type: boolean
+    default: true
+
+  - name: runInit
+    type: boolean
+    default: true
+
+steps:
+  - checkout: self
+    condition: ${{ parameters.checkout }}
+    displayName: 'Checkout repo'
+
+  - task: TerraformInstaller@1
+    condition: ${{ parameters.installTerraform }}
+    displayName: 'Installs Terraform'
+    inputs:
+      terraformVersion: $(terraformVersion)
+
+  - task: TerraformTask@5
+    # If terraform is not installed don't run this task
+    condition: and(${{ parameters.installTerraform }}, ${{ parameters.runInit }})
+    displayName: 'Terraform Init'
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: $(ServiceConnection)
+      backendAzureRmStorageAccountName: $(StorageAccountName)
+      backendAzureRmContainerName: $(ContainerName)
+      backendAzureRmKey: $(StateFile)
+      workingDirectory: $(terraformDirectory)
