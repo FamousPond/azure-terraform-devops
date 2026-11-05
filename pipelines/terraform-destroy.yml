@@ -13,9 +13,11 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  terraformVersion: '1.17.1'
-  terraformDirectory: 'automated_test_1/env_1'
-  group: tf-azure-training-vars
+  - group: tf-azure-training-vars
+  - name: terraformVersion
+    value: '1.17.1'
+  - name: terraformDirectory
+    value: 'automated_test_1/env_1'
 
 stages:
   - stage: Destroy
