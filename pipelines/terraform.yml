@@ -1,7 +1,13 @@
 # This pipeline will run on a PR to check if the Terraform is valid, create a plan and then on a merge into main apply that plan.
 
 trigger:
-  - main
+  branches:
+    include:
+      - main
+
+  tags:
+    exclude:
+      - no-deployment
 
 pr:
   - main
