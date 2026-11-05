@@ -9,9 +9,36 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: 'echo "build reason: $(Build.Reason), build source branch: $(Build.SourceBranch)"'
-  displayName: 'Print some build stats'
+variables:
+  terraformVersion: '1.17.1'
+  terraformDirectory: 'automated_test_1/env_1'
 
-#- checkout: self
-#  displayName: 'Checkout repo'
+stages:
+  - stage: Validate
+    displayName: 'Validate Terraform'
+    jobs:
+      - job: Setup stage
+        displayName: 'Setup stage'
+        steps:
+          - checkout: self
+            displayName: 'Checkout repo'
+
+          - task: TerraformInstaller@1
+            displayName: 'Installs Terraform'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+      - job: Validate
+        displayName: 'Validates Terraform'
+        steps:
+          - script: terraform fmt -check -recursive
+            displayName: 'Format Terraform'
+            workingDirectory: $(terraformDirectory)
+
+          - script: terraform init -backend=false
+            displayName: 'Init Terraform w/o backend'
+            workingDirectory: $(terraformDirectory)
+
+          - script: terraform validate
+            displayName: 'Validate Terraform'
+            workingDirectory: $(terraformDirectory)
