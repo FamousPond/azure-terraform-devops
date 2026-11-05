@@ -17,8 +17,8 @@ stages:
   - stage: Validate
     displayName: 'Validate Terraform'
     jobs:
-      - job: Setup_stage
-        displayName: 'Setup stage'
+      - job: Validate
+        displayName: 'Validates Terraform'
         steps:
           - checkout: self
             displayName: 'Checkout repo'
@@ -28,9 +28,6 @@ stages:
             inputs:
               terraformVersion: '$(terraformVersion)'
 
-      - job: Validate
-        displayName: 'Validates Terraform'
-        steps:
           - script: terraform fmt -check -recursive
             displayName: 'Format Terraform'
             workingDirectory: $(terraformDirectory)
