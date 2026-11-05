@@ -27,7 +27,7 @@ stages:
         displayName: 'Destroy Terraform'
         steps:
           - bash: |
-              if [ "{{ parameters.destroy }}" != "DESTROY" ]; then
+              if [ "${{ parameters.destroy }}" != "DESTROY" ]; then
                 echo "You need to write DESTROY to destroy deployment"
                 exit 1
               fi
