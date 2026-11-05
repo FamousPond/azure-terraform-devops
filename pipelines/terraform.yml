@@ -11,10 +11,7 @@ pool:
 
 variables:
   - group: tf-azure-training-vars
-  - name: terraformVersion
-    value: '1.17.1'
-  - name: terraformDirectory
-    value: 'automated_test_1/env_1'
+  - template: variables.yml
 
 stages:
   - stage: Validate
@@ -64,10 +61,10 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendServiceArm: 'sc-azure-tf-dav'
-              backendAzureRmStorageAccountName: 'tfstore1126'
-              backendAzureRmContainerName: 'tfstate1'
-              backendAzureRmKey: 'dev.tfstate'
+              backendServiceArm: $(ServiceConnection)
+              backendAzureRmStorageAccountName: $(StorageAccountName)
+              backendAzureRmContainerName: $(ContainerName)
+              backendAzureRmKey: $(StateFile)
               workingDirectory: $(terraformDirectory)
 
           - task: TerraformTask@5
@@ -76,7 +73,7 @@ stages:
               provider: 'azurerm'
               command: 'plan'
               commandOptions: '-input=false -out=$(Build.ArtifactStagingDirectory)/tfplan'
-              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+              environmentServiceNameAzureRM: $(ServiceConnection)
               workingDirectory: $(terraformDirectory)
             env:
               TF_VAR_test_vnet_name: $(testVNetName)
@@ -96,7 +93,7 @@ stages:
     jobs:
       - deployment: Apply
         displayName: 'Apply Terraform'
-        environment: dev
+        environment: $(EnvironmentName)
         strategy:
           runOnce:
             deploy:
@@ -118,10 +115,10 @@ stages:
                   inputs:
                     provider: 'azurerm'
                     command: 'init'
-                    backendServiceArm: 'sc-azure-tf-dav'
-                    backendAzureRmStorageAccountName: 'tfstore1126'
-                    backendAzureRmContainerName: 'tfstate1'
-                    backendAzureRmKey: 'dev.tfstate'
+                    backendServiceArm: $(ServiceConnection)
+                    backendAzureRmStorageAccountName: $(StorageAccountName)
+                    backendAzureRmContainerName: $(ContainerName)
+                    backendAzureRmKey: $(StateFile)
                     workingDirectory: $(terraformDirectory)
 
                 - task: TerraformTask@5
@@ -130,5 +127,5 @@ stages:
                     provider: 'azurerm'
                     command: 'apply'
                     commandOptions: '-input=false $(Pipeline.Workspace)/tfplan/tfplan'
-                    environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+                    environmentServiceNameAzureRM: $(ServiceConnection)
                     workingDirectory: $(terraformDirectory)

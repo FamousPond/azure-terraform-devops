@@ -1,0 +1,12 @@
+# Variables for pipelines
+
+variables:
+  terraformVersion: '1.17.1'
+  terraformDirectory: 'automated_test_1/env_1'
+
+  ServiceConnection: 'sc-azure-tf-dav'
+  StorageAccountName: 'tfstore1126'
+  ContainerName: 'tfstate1'
+  StateFile: 'dev.tfstate'
+
+  EnvironmentName: 'dev'
