@@ -1,4 +1,4 @@
-# This pipeline will run on a PR to check if the Terraform is valid
+# This pipeline will run on a PR to check if the Terraform is valid, create a plan and then on a merge into main apply that plan.
 
 trigger:
   - main
@@ -126,7 +126,7 @@ stages:
                   inputs:
                     provider: 'azurerm'
                     command: 'apply'
-                    commandOptions: '-input=false $(Pipeline.Workspace)/tfplan'
+                    commandOptions: '-input=false $(Pipeline.Workspace)/tfplan/tfplan'
                     environmentServiceNameAzureRM: 'sc-azure-tf-dav'
                     workingDirectory: $(terraformDirectory)
 
