@@ -14,8 +14,6 @@ parameters:
     type: boolean
     default: true
 
-
-
 steps:
   - checkout: self
     condition: ${{ parameters.checkout }}
@@ -28,7 +26,8 @@ steps:
       terraformVersion: $(terraformVersion)
 
   - task: TerraformTask@5
-    condition: ${{ parameters.runInit }}
+    # If terraform is not installed don't run this task
+    condition: and(${{ parameters.installTerraform }}, ${{ parameters.runInit }})
     displayName: 'Terraform Init'
     inputs:
       provider: 'azurerm'
