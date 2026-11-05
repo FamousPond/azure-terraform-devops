@@ -12,7 +12,9 @@ This test is now using Azure DevOps pipelines to deploy to Azure. Two ADO pipeli
 2. Runs Terraform plan and outputs the plan file as a pipeline artifact. 
 3. When merging into main it applies the Terraform config.
 
-If there is an error in the first step, the PR is blocked from being merged into main. 
+There are GitHub rules in place to block a PR from being merged into main when stages 1 or 2 error.  
+
+I have also added a `no-deploy` label that can be added to a PR when I want to merge code into main but don't want anything deployed from it. 
 
 The second (`pipelines/terraform-destroy.yml`) runs manually and destroys the Azure deployment. 
 
