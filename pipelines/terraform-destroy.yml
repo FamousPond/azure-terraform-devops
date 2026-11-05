@@ -1,0 +1,69 @@
+# This pipeline has to be manually run and destroys the running deployment.
+
+trigger: none
+pr: none
+
+parameters:
+- name: destroy
+  displayName: Type DESTROY to confirm
+  type: string
+  default: ''
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  terraformVersion: '1.17.1'
+  terraformDirectory: 'automated_test_1/env_1'
+
+stages:
+  - stage: Destroy
+    displayName: 'Destroy Terraform'
+    jobs:
+      - job: Destroy
+        displayName: 'Destroy Terraform'
+        steps:
+          - bash: |
+              if [ "{{ parameters.destroy }}" != "DESTROY" ]; then
+                echo "You need to write DESTROY to destroy deployment"
+              fi
+            displayName: 'Check destroy confirmation'
+
+          - checkout: self
+            displayName: 'Checkout repo'
+
+          - task: TerraformInstaller@1
+            displayName: 'Installs Terraform'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+          - task: TerraformTask@5
+            displayName: 'Terraform Init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'sc-azure-tf-dav'
+              backendAzureRmStorageAccountName: 'tfstore1126'
+              backendAzureRmContainerName: 'tfstate1'
+              backendAzureRmKey: 'dev.tfstate'
+              workingDirectory: $(terraformDirectory)
+
+          - task: TerraformTask@5
+            displayName: 'Terraform Plan'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              commandOptions: '-destroy -input=false -out=tfplan'
+              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+              workingDirectory: $(terraformDirectory)
+            env:
+              TF_VAR_test_vnet_name: $(testVNetName)
+
+          - task: TerraformTask@5
+            displayName: 'Terraform Apply'
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              commandOptions: '-input=false tfplan'
+              environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+              workingDirectory: $(terraformDirectory)
