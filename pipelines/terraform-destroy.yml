@@ -15,6 +15,7 @@ pool:
 variables:
   terraformVersion: '1.17.1'
   terraformDirectory: 'automated_test_1/env_1'
+  group: tf-azure-training-vars
 
 stages:
   - stage: Destroy
