@@ -17,7 +17,7 @@ stages:
   - stage: Validate
     displayName: 'Validate Terraform'
     jobs:
-      - job: Setup stage
+      - job: Setup_stage
         displayName: 'Setup stage'
         steps:
           - checkout: self
