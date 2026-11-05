@@ -20,6 +20,10 @@ provider "azurerm" {
   features {}
 }
 
+variable "test_vnet_name" {
+  type = string
+}
+
 # This is an azure resource group.
 resource "azurerm_resource_group" "example_rg" {
   name     = "rg-dev"
@@ -28,7 +32,7 @@ resource "azurerm_resource_group" "example_rg" {
 
 # VNet similar to a vpc.
 resource "azurerm_virtual_network" "test_vnet" {
-  name                = "dev-vnet"
+  name                = var.test_vnet_name
   location            = azurerm_resource_group.example_rg.location
   resource_group_name = azurerm_resource_group.example_rg.name
   address_space       = ["10.0.0.0/16"]
