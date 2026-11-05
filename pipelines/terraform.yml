@@ -23,9 +23,6 @@ stages:
       - job: Validate
         displayName: 'Validates Terraform'
         steps:
-          - script: 'echo "VNet name is: $(testVNetName)"'
-            displayName: Debug variables
-
           - checkout: self
             displayName: 'Checkout repo'
 
