@@ -1,4 +1,4 @@
-# Pipeline that runs on a PR to check if the Terraform is valid
+# This pipeline will run on a PR to check if the Terraform is valid
 
 trigger:
   - main
