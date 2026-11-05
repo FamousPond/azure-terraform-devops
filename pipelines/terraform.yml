@@ -72,13 +72,62 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              commandOptions: '-input=false -out=tfplan'
+              commandOptions: '-input=false -out=$(Build.ArtifactStagingDirectory)/tfplan'
               environmentServiceNameAzureRM: 'sc-azure-tf-dav'
               workingDirectory: $(terraformDirectory)
-
-          - script: terraform show -no-color tfplan > $(Build.ArtifactStagingDirectory)/tfplan.txt
-            displayName: 'Convert plan to txt'
-            workingDirectory: $(terraformDirectory)
+            env:
+              TF_VAR_test_vnet_name: $(testVNetName)
 
           - publish: $(Build.ArtifactStagingDirectory)
-            artifact: tfplan.txt
+            artifact: tfplan
+
+  - stage: Apply
+    displayName: 'Apply Terraform'
+    dependsOn: Plan
+    condition: >-
+      and(
+        succeeded(), 
+        eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
+        ne(variables['Build.Reason'], 'PullRequest')
+      )
+    jobs:
+      - deployment: Apply
+        displayName: 'Apply Terraform'
+        environment: dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: 'Checkout repo'
+
+                - task: TerraformInstaller@1
+                  displayName: 'Installs Terraform'
+                  inputs:
+                    terraformVersion: '$(terraformVersion)'
+
+                - download: current
+                  displayName: 'Download plan'
+                  artifact: tfplan
+
+                - task: TerraformTask@5
+                  displayName: 'Terraform Init'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'init'
+                    backendServiceArm: 'sc-azure-tf-dav'
+                    backendAzureRmStorageAccountName: 'tfstore1126'
+                    backendAzureRmContainerName: 'tfstate1'
+                    backendAzureRmKey: 'dev.tfstate'
+                    workingDirectory: $(terraformDirectory)
+
+                - task: TerraformTask@5
+                  displayName: 'Terraform Apply'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'apply'
+                    commandOptions: '-input=false $(Pipeline.Workspace)/tfplan'
+                    environmentServiceNameAzureRM: 'sc-azure-tf-dav'
+                    workingDirectory: $(terraformDirectory)
+
+
