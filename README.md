@@ -7,7 +7,7 @@ This test was just to see how Terraform works and how to structure the configura
 This test went a bit deeper. I used an Azure storage account to remotely store the Terraform config file, and I deployed two machines one of which had a public IP. 
 
 ### automated_test_1
-This test is now using Azure DevOps pipelines to deploy to Azure. Two ADO pipelines are being created. The first (`pipelines/terraform.yml`) runs on a GitHub PR and merge into `main`, and does the following:
+This test is now using Azure DevOps pipelines to deploy to Azure. Two ADO pipelines are being created. The first (`pipelines/terraform.yml`) runs on a GitHub PR and merge into `main`, and does the following in different stages:
 1. Checks the Terraform format and validates it. 
 2. Runs Terraform plan and outputs the plan file as a pipeline artifact. 
 3. When merging into main it applies the Terraform config.
