@@ -4,19 +4,34 @@ resource "azurerm_virtual_network" "test_vnet" {
   location            = var.location
   resource_group_name = var.rg_name
   address_space       = ["10.0.0.0/16"]
+}
 
-  # Can declare a subnet here or as a resource "azurerm_subnet" but can't do both
-  subnet {
-    name             = "dev-subnet-1"
-    address_prefixes = ["10.0.1.0/24"]
-    security_group   = azurerm_network_security_group.test_sg.id
-  }
+resource "azurerm_subnet" "bastion_subnet" {
+  name = "bastion-subnet"
+  resource_group_name = var.rg_name
+  virtual_network_name = azurerm_virtual_network.test_vnet.name
+  address_prefixes = ["10.0.0.0/24"]
+}
 
-  subnet {
-    name             = "dev-subnet-2"
-    address_prefixes = ["10.0.2.0/24"]
-    security_group   = azurerm_network_security_group.test_sg.id
-  }
+resource "azurerm_subnet" "public_subnet" {
+  name = "public-subnet"
+  resource_group_name = var.rg_name
+  virtual_network_name = azurerm_virtual_network.test_vnet.name
+  address_prefixes = ["10.0.1.0/24"]
+}
+
+resource "azurerm_subnet" "private_subnet" {
+  name = "private-subnet"
+  resource_group_name = var.rg_name
+  virtual_network_name = azurerm_virtual_network.test_vnet.name
+  address_prefixes = ["10.0.2.0/24"]
+}
+
+resource "azurerm_subnet" "very_private_subnet" {
+  name = "very-private-subnet"
+  resource_group_name = var.rg_name
+  virtual_network_name = azurerm_virtual_network.test_vnet.name
+  address_prefixes = ["10.0.3.0/24"]
 }
 
 resource "azurerm_public_ip" "test_pub_ip" {
