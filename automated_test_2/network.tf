@@ -6,6 +6,7 @@ resource "azurerm_virtual_network" "test_vnet" {
   address_space       = ["10.0.0.0/16"]
 }
 
+# Subnets
 resource "azurerm_subnet" "bastion_subnet" {
   name = "bastion-subnet"
   resource_group_name = var.rg_name
@@ -34,6 +35,7 @@ resource "azurerm_subnet" "very_private_subnet" {
   address_prefixes = ["10.0.3.0/24"]
 }
 
+# Public IP
 resource "azurerm_public_ip" "test_pub_ip" {
   name                = "dev-public-ip"
   resource_group_name = var.rg_name

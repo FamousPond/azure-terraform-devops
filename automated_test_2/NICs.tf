@@ -1,33 +1,33 @@
-locals {
-  #  map subnet names to ids because you can't id each individually.
-  subnet_ids = {
-    for subnet in azurerm_virtual_network.test_vnet.subnet : subnet.name => subnet.id
-  }
-}
-
-resource "azurerm_network_interface" "test_nic_1" {
-  name                = "dev-nic-1"
+resource "azurerm_network_interface" "web_nic" {
+  name                = "web_nic"
   location            = var.location
   resource_group_name = var.rg_name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = local.subnet_ids["dev-subnet-1"]
+    subnet_id                     = azurerm_subnet.public_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = "10.0.1.17"
+    private_ip_address            = "10.0.1.11"
     public_ip_address_id          = azurerm_public_ip.test_pub_ip.id
   }
 }
 
-resource "azurerm_network_interface" "test_nic_2" {
-  name                = "dev-nic-2"
+resource "azurerm_network_interface_application_security_group_association" "example" {
+  network_interface_id          = azurerm_network_interface.example.id
+  application_security_group_id = azurerm_application_security_group.example.id
+}
+
+
+
+resource "azurerm_network_interface" "backend_nic" {
+  name                = "backend-nic"
   location            = var.location
   resource_group_name = var.rg_name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = local.subnet_ids["dev-subnet-2"]
+    subnet_id                     = azurerm_subnet.private_subnet.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = "10.0.2.245"
+    private_ip_address            = "10.0.2.11"
   }
 }

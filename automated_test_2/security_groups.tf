@@ -18,8 +18,38 @@ resource "azurerm_application_security_group" "bastion_asg" {
 }
 
 # Network security groups
-resource "azurerm_network_security_group" "from_bastion" {
-  name                = "from-bastion-sg"
+resource "azurerm_network_security_group" "to_web_machine" {
+  name                = "to-web-machine-sg"
+  location            = var.location
+  resource_group_name = var.rg_name
+
+  security_rule {
+    name                       = "allow-ssh-from-bastion-sg"
+    priority                   = 99
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_application_security_group_ids      = [azurerm_application_security_group.bastion_asg.id]
+    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
+  }
+
+  security_rule {
+    name                       = "allow-http-from-internet-sg"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "*"
+    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
+  }
+}
+
+resource "azurerm_network_security_group" "to_backend_machine" {
+  name                = "to-backend-machine-sg"
   location            = var.location
   resource_group_name = var.rg_name
 
@@ -32,18 +62,12 @@ resource "azurerm_network_security_group" "from_bastion" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_application_security_group_ids      = [azurerm_application_security_group.bastion_asg.id]
-    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id, azurerm_application_security_group.backend_asg.id]
+    destination_application_security_group_ids = [azurerm_application_security_group.backend_asg.id]
   }
-}
-
-resource "azurerm_network_security_group" "from_web_machine" {
-  name                = "from-web-machine-sg"
-  location            = var.location
-  resource_group_name = var.rg_name
 
   security_rule {
     name                       = "allow-from-web-machine-sg"
-    priority                   = 100
+    priority                   = 99
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -51,23 +75,5 @@ resource "azurerm_network_security_group" "from_web_machine" {
     destination_port_range     = "*"
     source_application_security_group_ids      = [azurerm_application_security_group.web_asg.id]
     destination_application_security_group_ids = [azurerm_application_security_group.backend_asg.id]
-  }
-}
-
-resource "azurerm_network_security_group" "from_internet" {
-  name                = "from-internet-sg"
-  location            = var.location
-  resource_group_name = var.rg_name
-
-  security_rule {
-    name                       = "allow-from-internet-sg"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8080"
-    source_address_prefix      = "*"
-    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
   }
 }
