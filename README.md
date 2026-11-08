@@ -1,7 +1,9 @@
 This repository is for training myself on how to use Azure DevOps (ADO) pipelines to use Terraform to deploy infrastructure to Azure. The following is what I have been doing with the most recent at the top. 
 
 ### automated_test_2
-This test will use the two pipelines from the last test, but I am going to upgrade the deployment. Instead of just a single VNet, it will be a mock web service environment with bastion, key vault, NSGs, private endpoint and two Ubuntu machines. See the full plan here: ![ADO deployment diagram](automated_test_2/plan/deployment_diagram.png). 
+This test will use the two pipelines from the last test, but I am going to upgrade the deployment. Instead of just a single VNet, it will be a mock web service environment with bastion, key vault, NSGs, private endpoint and two Ubuntu machines. See the full plan here: ![ADO deployment diagram](automated_test_2/plan/deployment_diagram.png) 
+
+I have also split up the main Terraform file into multiple Terraform files for modularity. 
 
 
 ### automated_test_1
