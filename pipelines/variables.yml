@@ -2,7 +2,7 @@
 
 variables:
   terraformVersion: '1.17.1'
-  terraformDirectory: 'automated_test_1'
+  terraformDirectory: 'automated_test_2'
 
   ServiceConnection: 'sc-azure-tf-dav'
   StorageAccountName: 'tfstore1126'
