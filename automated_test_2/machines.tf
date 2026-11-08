@@ -13,19 +13,19 @@ resource "azurerm_bastion_host" "bastion_host" {
 }
 
 # linux vm same as an ec2 instance
-resource "azurerm_linux_virtual_machine" "test_vm_1" {
-  name                = "dev-vm-1"
+resource "azurerm_linux_virtual_machine" "web_vm" {
+  name                = "web-vm"
   resource_group_name = var.rg_name
   location            = var.location
   size                = "Standard_B2ps_v2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.test_nic_1.id,
+    azurerm_network_interface.web_nic.id,
   ]
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("../ssh_keys/id_ed25519.pub")
+    public_key = var.ssh_public_key
   }
 
   os_disk {
@@ -41,19 +41,19 @@ resource "azurerm_linux_virtual_machine" "test_vm_1" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "test_vm_2" {
-  name                = "dev-vm-2"
+resource "azurerm_linux_virtual_machine" "backend_vm" {
+  name                = "backend-vm"
   resource_group_name = var.rg_name
   location            = var.location
   size                = "Standard_B2ps_v2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.test_nic_2.id,
+    azurerm_network_interface.backedn_nic.id,
   ]
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("../ssh_keys/id_ed25519.pub")
+    public_key = var.ssh_public_key
   }
 
   os_disk {

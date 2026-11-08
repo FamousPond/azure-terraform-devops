@@ -10,12 +10,8 @@ variable "rg_name" {
   default     = "dev-rg"
 }
 
-variable "public_ip" {
-  type        = string
-  description = "Public IP of the deployed system."
-
-  validation {
-    condition     = can(cidrnetmask("${var.public_ip}/32"))
-    error_message = "Public IP privided is invalid."
-  }
+variable "ssh_public_key" {
+  type = string
+  description = "SSH public key for accessing the virtual machines"
 }
+
