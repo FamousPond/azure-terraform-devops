@@ -35,9 +35,20 @@ resource "azurerm_subnet" "very_private_subnet" {
   address_prefixes = ["10.0.3.0/24"]
 }
 
-# Public IP
-resource "azurerm_public_ip" "test_pub_ip" {
-  name                = "dev-public-ip"
+# Public IPs
+resource "azurerm_public_ip" "web_pub_ip" {
+  name                = "web-public-ip"
+  resource_group_name = var.rg_name
+  location            = var.location
+  allocation_method   = "Static"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "azurerm_public_ip" "bastion_pub_ip" {
+  name                = "bastion-public-ip"
   resource_group_name = var.rg_name
   location            = var.location
   allocation_method   = "Static"
