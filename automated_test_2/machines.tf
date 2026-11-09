@@ -51,6 +51,10 @@ resource "azurerm_linux_virtual_machine" "backend_vm" {
     azurerm_network_interface.backedn_nic.id,
   ]
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   admin_ssh_key {
     username   = "adminuser"
     public_key = var.ssh_public_key
