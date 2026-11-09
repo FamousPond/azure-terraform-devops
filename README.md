@@ -1,7 +1,9 @@
 This repository is for training myself on how to use Azure DevOps (ADO) pipelines to use Terraform to deploy infrastructure to Azure. The following is what I have been doing with the most recent at the top. 
 
 ### automated_test_3
-This test is going to add another pipeline to monitor if I have left systems up overnight. It will run daily at 2 am and if I have left any systems up overnight it will alert me. This is to ensure I don't leave resources up when I am not suing them.  
+This test is going to add another pipeline to monitor if I have left systems up overnight. It will run daily at 2 am and if I have left any systems up overnight it will alert me. This is to ensure I don't leave resources up when I am not using them.  
+
+The pipeline fails if there are resources up, and I have notifications setup in ADO to email me if this pipline fails. 
 
 There wil be no folder for this as it is going to be put into the pipelines folder. 
 

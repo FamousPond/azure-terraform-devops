@@ -1,6 +1,4 @@
-# Pipeline will run daily to check if I have infrastructure still up and if I do alert me.
-
-# For initial testing I will set it's trigger to be manual.
+# Pipeline runs daily checks for if I have infrastructure still up and if I do it emails me.
 
 trigger: none
 pr: none
