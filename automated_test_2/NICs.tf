@@ -1,7 +1,7 @@
 resource "azurerm_network_interface" "web_nic" {
   name                = "web_nic"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 
   ip_configuration {
     name                          = "internal"
@@ -15,7 +15,7 @@ resource "azurerm_network_interface" "web_nic" {
 resource "azurerm_network_interface" "backend_nic" {
   name                = "backend-nic"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 
   ip_configuration {
     name                          = "internal"

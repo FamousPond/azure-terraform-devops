@@ -9,7 +9,7 @@ resource "random_string" "key_vault_suffix" {
 resource "azurerm_key_vault" "key_vault" {
   name                          = "tf-key-vault-${random_string.key_vault_suffix.result}"
   location                      = var.location
-  resource_group_name           = var.rg_name
+  resource_group_name           = azurerm_resource_group.dev_rg.name
   rbac_authorization_enabled    = true
   sku_name                      = "standard"
   tenant_id                     = data.azurerm_client_config.current.tenant_id
@@ -26,7 +26,7 @@ resource "azurerm_key_vault" "key_vault" {
 resource "azurerm_private_endpoint" "private_endpoint_to_key_vault" {
   name                = "private-endpoint-to-key-vault"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
   subnet_id           = azurerm_subnet.very_private_subnet.id
 
   private_service_connection {
