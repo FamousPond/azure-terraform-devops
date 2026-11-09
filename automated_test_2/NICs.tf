@@ -8,7 +8,7 @@ resource "azurerm_network_interface" "web_nic" {
     subnet_id                     = azurerm_subnet.public_subnet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.0.1.11"
-    public_ip_address_id          = azurerm_public_ip.test_pub_ip.id
+    public_ip_address_id          = azurerm_public_ip.web_pub_ip.id
   }
 }
 

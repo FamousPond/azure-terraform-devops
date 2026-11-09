@@ -3,7 +3,7 @@ resource "azurerm_bastion_host" "bastion_host" {
   name                = "bastion-host"
   location            = var.location
   resource_group_name = var.rg_name
-  sku                 = Basic
+  sku                 = "Basic"
 
   ip_configuration {
     name                 = "ip-configuration"
@@ -48,7 +48,7 @@ resource "azurerm_linux_virtual_machine" "backend_vm" {
   size                = "Standard_B2ps_v2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.backedn_nic.id,
+    azurerm_network_interface.backend_nic.id,
   ]
 
   identity {

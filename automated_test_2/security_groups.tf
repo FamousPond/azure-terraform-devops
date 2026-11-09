@@ -25,7 +25,7 @@ resource "azurerm_network_security_group" "to_web_machine" {
     protocol                                   = "Tcp"
     source_port_range                          = "*"
     destination_port_range                     = "22"
-    source_address_prefixes                    = [azurerm_subnet.bastion_subnet.address_prefixes]
+    source_address_prefixes                    = azurerm_subnet.bastion_subnet.address_prefixes
     destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
   }
 
@@ -55,7 +55,7 @@ resource "azurerm_network_security_group" "to_backend_machine" {
     protocol                                   = "Tcp"
     source_port_range                          = "*"
     destination_port_range                     = "22"
-    source_address_prefixes                    = [azurerm_subnet.bastion_subnet.address_prefixes]
+    source_address_prefixes                    = azurerm_subnet.bastion_subnet.address_prefixes
     destination_application_security_group_ids = [azurerm_application_security_group.backend_asg.id]
   }
 
@@ -86,6 +86,6 @@ resource "azurerm_network_security_group" "to_bastion" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
-    destination_address_prefix = [azurerm_subnet.bastion_subnet.address_prefixes]
+    destination_address_prefix = azurerm_subnet.bastion_subnet.address_prefixes[0]
   }
 }
