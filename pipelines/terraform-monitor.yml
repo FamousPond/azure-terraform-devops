@@ -31,7 +31,22 @@ stages:
               workingDirectory: $(terraformDirectory)
               outputTo: file
               outputFormat: default
-              fileName: "$(Build.ArtifactStagingDirectory)/file.txt"
+              fileName: "$(Build.ArtifactStagingDirectory)/state.txt"
+
+          - bash: |
+              if grep -qF "The state file is empty. No resources are represented." "$(Build.ArtifactStagingDirectory)/state.txt"; then
+                STATE_EMPTY=true
+              else
+                STATE_EMPTY=false
+              fi
+              echo "State empty: $STATE_EMPTY"
+              echo "##vso[task.setvariable variable=stateEmpty;isOutput=true]$STATE_EMPTY"
+            name: stateCheck
+            displayName: "Check if state is empty"
+
+          - bash: exit 0
+            condition: eq(variables['stateCheck.stateEmpty'], 'true')
+            displayName: "Exit if nothing to show"
 
           - script: cat $(Build.ArtifactStagingDirectory)/file.txt
             displayName: "Print the show"
