@@ -1,0 +1,26 @@
+# Pipeline will run daily to check if I have infrastructure still up and if I do alert me.
+
+# For initial testing I will set it's trigger to be manual.
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tf-azure-training-vars
+  - template: variables.yml
+
+stages:
+  - stage: Show
+    displayName: 'Show Terraform State'
+    jobs:
+      - job: Show
+        displayName: 'Show Terraform State'
+        steps:
+          - template: templates/setup.yml
+
+          - script: terraform show
+            displayName: 'Show Terraform State'
+            workingDirectory: $(terraformDirectory)
