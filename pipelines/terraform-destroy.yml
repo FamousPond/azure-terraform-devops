@@ -41,7 +41,7 @@ stages:
               environmentServiceNameAzureRM: $(ServiceConnection)
               workingDirectory: $(terraformDirectory)
             env:
-              TF_VAR_test_vnet_name: $(testVNetName)
+              TF_VAR_ssh_public_key: $(sshPublicKey)
 
           - task: TerraformTask@5
             displayName: 'Terraform Apply'
