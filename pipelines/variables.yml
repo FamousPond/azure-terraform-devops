@@ -7,6 +7,6 @@ variables:
   ServiceConnection: 'sc-azure-tf-dav'
   StorageAccountName: 'tfstore1126'
   ContainerName: 'tfstate1'
-  StateFile: 'dev.tfstate1'
+  StateFile: 'dev.tfstate'
 
   EnvironmentName: 'dev'
