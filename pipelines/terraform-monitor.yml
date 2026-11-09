@@ -1,0 +1,56 @@
+# Pipeline runs daily checks for if I have infrastructure still up and if I do it emails me.
+
+trigger: none
+pr: none
+
+schedules:
+  - cron: '0 12 * * *'
+    displayName: "Running resources check." # at 1 am (Or 2 am if not daylight savings)
+    branches:
+      include: [main]
+    always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tf-azure-training-vars
+  - template: variables.yml
+
+stages:
+  - stage: Show
+    displayName: 'Show Terraform State'
+    jobs:
+      - job: Show
+        displayName: 'Show Terraform State'
+        steps:
+          - template: templates/setup.yml
+
+          - task: TerraformTask@5
+            displayName: 'Terraform Show'
+            inputs:
+              provider: 'azurerm'
+              command: 'show'
+              commandOptions: '-no-color'
+              environmentServiceNameAzureRM: $(ServiceConnection)
+              workingDirectory: $(terraformDirectory)
+              outputTo: file
+              outputFormat: default
+              fileName: "$(Build.ArtifactStagingDirectory)/state.txt"
+
+          - bash: |
+              if grep -qF "The state file is empty. No resources are represented." "$(Build.ArtifactStagingDirectory)/state.txt"; then
+                STATE_EMPTY=true
+              else
+                STATE_EMPTY=false
+              fi
+              echo "State empty: $STATE_EMPTY"
+              echo "##vso[task.setvariable variable=stateEmpty;isOutput=true]$STATE_EMPTY"
+            name: stateCheck
+            displayName: "Check if state is empty"
+
+          - bash: |
+             echo "##vso[task.logissue type=error]Terraform state is not empty - resources are still running in Azure."
+             exit 1
+            condition: eq(variables['stateCheck.stateEmpty'], 'false')
+            displayName: "Fail if stack is not empty"
