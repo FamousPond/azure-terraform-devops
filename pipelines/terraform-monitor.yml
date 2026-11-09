@@ -31,8 +31,7 @@ stages:
               workingDirectory: $(terraformDirectory)
               outputTo: file
               outputFormat: default
-              fileName: file.txt
+              fileName: "$(Build.ArtifactStagingDirectory)/file.txt"
 
-          - script: cat file.txt
+          - script: cat $(Build.ArtifactStagingDirectory)/file.txt
             displayName: "Print the show"
-            workingDirectory: $(terraformDirectory)
