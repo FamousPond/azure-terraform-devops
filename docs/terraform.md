@@ -17,6 +17,8 @@ This file contains what I have learn about terraform. It's commands, how to use 
 
 `terraform destroy` - Destroys the Terraform resources running. 
 
+`terraform providers lock -platform=linux_amd64 -platform=darwin_arm64 -platform=windows_amd64` - creates the terraform lock file that works on everything
+
 ## How to write it
 
 Start with this part:

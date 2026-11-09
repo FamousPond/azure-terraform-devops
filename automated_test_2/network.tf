@@ -68,7 +68,7 @@ resource "azurerm_public_ip" "bastion_pub_ip" {
 
 # NAT gateway
 resource "azurerm_nat_gateway" "nat_gateway" {
-  name                    = "nat-gateway"
-  location                = var.location
-  resource_group_name     = var.rg_name
+  name                = "nat-gateway"
+  location            = var.location
+  resource_group_name = var.rg_name
 }
