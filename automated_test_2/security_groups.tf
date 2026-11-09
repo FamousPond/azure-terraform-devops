@@ -2,20 +2,20 @@
 resource "azurerm_application_security_group" "web_asg" {
   name                = "web-asg"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 }
 
 resource "azurerm_application_security_group" "backend_asg" {
   name                = "backend-asg"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 }
 
 # Network security groups
 resource "azurerm_network_security_group" "to_web_machine" {
   name                = "to-web-machine-sg"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 
   security_rule {
     name                                       = "allow-ssh-from-bastion-sg"
@@ -45,7 +45,7 @@ resource "azurerm_network_security_group" "to_web_machine" {
 resource "azurerm_network_security_group" "to_backend_machine" {
   name                = "to-backend-machine-sg"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 
   security_rule {
     name                                       = "allow-ssh-from-bastion-sg"
@@ -75,7 +75,7 @@ resource "azurerm_network_security_group" "to_backend_machine" {
 resource "azurerm_network_security_group" "to_bastion" {
   name                = "to-bastion-sg"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
 
   security_rule {
     name                       = "allow-ssh-to-bastion-sg"

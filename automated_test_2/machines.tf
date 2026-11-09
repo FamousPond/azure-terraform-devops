@@ -2,7 +2,7 @@
 resource "azurerm_bastion_host" "bastion_host" {
   name                = "bastion-host"
   location            = var.location
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
   sku                 = "Basic"
 
   ip_configuration {
@@ -15,7 +15,7 @@ resource "azurerm_bastion_host" "bastion_host" {
 # linux vm same as an ec2 instance
 resource "azurerm_linux_virtual_machine" "web_vm" {
   name                = "web-vm"
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
   location            = var.location
   size                = "Standard_B2ps_v2"
   admin_username      = "adminuser"
@@ -43,7 +43,7 @@ resource "azurerm_linux_virtual_machine" "web_vm" {
 
 resource "azurerm_linux_virtual_machine" "backend_vm" {
   name                = "backend-vm"
-  resource_group_name = var.rg_name
+  resource_group_name = azurerm_resource_group.dev_rg.name
   location            = var.location
   size                = "Standard_B2ps_v2"
   admin_username      = "adminuser"
