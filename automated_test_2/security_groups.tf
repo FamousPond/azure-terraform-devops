@@ -19,7 +19,7 @@ resource "azurerm_network_security_group" "to_web_machine" {
 
   security_rule {
     name                                       = "allow-ssh-from-bastion-sg"
-    priority                                   = 99
+    priority                                   = 101
     direction                                  = "Inbound"
     access                                     = "Allow"
     protocol                                   = "Tcp"
@@ -61,7 +61,7 @@ resource "azurerm_network_security_group" "to_backend_machine" {
 
   security_rule {
     name                                       = "allow-from-web-machine-sg"
-    priority                                   = 99
+    priority                                   = 101
     direction                                  = "Inbound"
     access                                     = "Allow"
     protocol                                   = "Tcp"
