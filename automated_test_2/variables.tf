@@ -11,7 +11,7 @@ variable "rg_name" {
 }
 
 variable "ssh_public_key" {
-  type = string
+  type        = string
   description = "SSH public key for accessing the virtual machines"
 }
 
