@@ -21,6 +21,18 @@ stages:
         steps:
           - template: templates/setup.yml
 
-          - script: terraform show
-            displayName: 'Show Terraform State'
+          - task: TerraformTask@5
+            displayName: 'Terraform Show'
+            inputs:
+              provider: 'azurerm'
+              command: 'show'
+              commandOptions: '-no-color'
+              environmentServiceNameAzureRM: $(ServiceConnection)
+              workingDirectory: $(terraformDirectory)
+              outputTo: file
+              outputFormat: default
+              fileName: file.txt
+
+          - script: cat file.txt
+            displayName: "Print the show"
             workingDirectory: $(terraformDirectory)
