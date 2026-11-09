@@ -44,9 +44,6 @@ stages:
             name: stateCheck
             displayName: "Check if state is empty"
 
-          - bash: exit 0
-            condition: eq(variables['stateCheck.stateEmpty'], 'true')
-            displayName: "Exit if nothing to show"
-
-          - script: cat $(Build.ArtifactStagingDirectory)/file.txt
-            displayName: "Print the show"
+          - bash: exit 1
+            condition: eq(variables['stateCheck.stateEmpty'], 'false')
+            displayName: "Fail if stack is not empty"
