@@ -24,3 +24,9 @@ resource "azurerm_subnet_network_security_group_association" "bastion_subnet_nsg
   subnet_id                 = azurerm_subnet.bastion_subnet.id
   network_security_group_id = azurerm_network_security_group.to_bastion.id
 }
+
+# NAT gateway and subnet associations
+resource "azurerm_subnet_nat_gateway_association" "private_subnet_nat_gateway_assoc" {
+  subnet_id      = azurerm_subnet.private_subnet.id
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
+}

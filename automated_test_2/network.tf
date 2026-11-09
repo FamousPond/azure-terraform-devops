@@ -65,3 +65,10 @@ resource "azurerm_public_ip" "bastion_pub_ip" {
     create_before_destroy = true
   }
 }
+
+# NAT gateway
+resource "azurerm_nat_gateway" "nat_gateway" {
+  name                    = "nat-gateway"
+  location                = var.location
+  resource_group_name     = var.rg_name
+}
