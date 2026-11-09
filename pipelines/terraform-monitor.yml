@@ -44,6 +44,8 @@ stages:
             name: stateCheck
             displayName: "Check if state is empty"
 
-          - bash: exit 1
+          - bash: |
+             echo "##vso[task.logissue type=error]Terraform state is not empty - resources are still running in Azure."
+             exit 1
             condition: eq(variables['stateCheck.stateEmpty'], 'false')
             displayName: "Fail if stack is not empty"
