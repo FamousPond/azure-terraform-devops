@@ -5,6 +5,13 @@
 trigger: none
 pr: none
 
+schedules:
+  - cron: '0 12 * * *'
+    displayName: "Running resources check." # at 1 am (Or 2 am if not daylight savings)
+    branches:
+      include: [main]
+    always: true
+
 pool:
   vmImage: ubuntu-latest
 
