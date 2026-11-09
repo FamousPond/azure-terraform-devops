@@ -16,7 +16,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "key_vault_dns_to_vnet"
 
 # Subnets
 resource "azurerm_subnet" "bastion_subnet" {
-  name                 = "bastion-subnet"
+  name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.dev_rg.name
   virtual_network_name = azurerm_virtual_network.test_vnet.name
   address_prefixes     = ["10.0.0.0/24"]
