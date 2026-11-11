@@ -1,5 +1,8 @@
 This repository is for training myself on how to use Azure DevOps (ADO) pipelines to use Terraform to deploy infrastructure to Azure. The following is what I have been doing with the most recent at the top. 
 
+### automated_test_4
+This test I am going to explore Terraform's modules. But first I want to add load balancing. 
+
 ### automated_test_3
 This test is going to add another pipeline to monitor if I have left systems up overnight. It will run daily at 2 am and if I have left any systems up overnight it will alert me. This is to ensure I don't leave resources up when I am not using them.  
 
