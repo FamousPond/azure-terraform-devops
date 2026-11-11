@@ -4,10 +4,12 @@ resource "azurerm_network_interface_application_security_group_association" "web
   application_security_group_id = azurerm_application_security_group.web_asg.id
 }
 
+/* Removed due to VM limit
 resource "azurerm_network_interface_application_security_group_association" "web_2_nic_asg" {
   network_interface_id          = azurerm_network_interface.web_2_nic.id
   application_security_group_id = azurerm_application_security_group.web_asg.id
 }
+*/
 
 resource "azurerm_network_interface_application_security_group_association" "backend_nic_asg" {
   network_interface_id          = azurerm_network_interface.backend_nic.id
@@ -43,8 +45,10 @@ resource "azurerm_network_interface_backend_address_pool_association" "web_1_lb_
   backend_address_pool_id = azurerm_lb_backend_address_pool.lb_address_pool.id
 }
 
+/* Removed due to VM limit
 resource "azurerm_network_interface_backend_address_pool_association" "web_2_lb_assoc" {
   network_interface_id    = azurerm_network_interface.web_2_nic.id
   ip_configuration_name   = "internal"
   backend_address_pool_id = azurerm_lb_backend_address_pool.lb_address_pool.id
 }
+*/

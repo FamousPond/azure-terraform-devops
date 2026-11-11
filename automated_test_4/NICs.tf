@@ -10,7 +10,7 @@ resource "azurerm_network_interface" "web_1_nic" {
     private_ip_address            = "10.0.1.11"
   }
 }
-
+/* Removed due to VM limit
 resource "azurerm_network_interface" "web_2_nic" {
   name                = "web-2-nic"
   location            = var.location
@@ -23,6 +23,7 @@ resource "azurerm_network_interface" "web_2_nic" {
     private_ip_address            = "10.0.1.12"
   }
 }
+*/
 
 resource "azurerm_network_interface" "backend_nic" {
   name                = "backend-nic"
