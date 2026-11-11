@@ -14,7 +14,7 @@ resource "azurerm_bastion_host" "bastion_host" {
 
 # linux vm same as an ec2 instance
 resource "azurerm_linux_virtual_machine" "web_1_vm" {
-  name                = "web-vm"
+  name                = "web-1-vm"
   resource_group_name = azurerm_resource_group.dev_rg.name
   location            = var.location
   size                = "Standard_B2ps_v2"
@@ -42,7 +42,7 @@ resource "azurerm_linux_virtual_machine" "web_1_vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "web_2_vm" {
-  name                = "web-vm"
+  name                = "web-2-vm"
   resource_group_name = azurerm_resource_group.dev_rg.name
   location            = var.location
   size                = "Standard_B2ps_v2"
