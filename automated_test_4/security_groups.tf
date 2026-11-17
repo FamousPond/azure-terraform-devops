@@ -37,6 +37,7 @@ resource "azurerm_network_security_group" "to_web_machine" {
     protocol                                   = "Tcp"
     source_port_range                          = "*"
     destination_port_range                     = "8080"
+    # trivy:ignore:AZU-0047 Required to let the users connect to the website
     source_address_prefix                      = "Internet"
     destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
   }
@@ -76,18 +77,6 @@ resource "azurerm_network_security_group" "to_bastion" {
   name                = "to-bastion-sg"
   location            = var.location
   resource_group_name = azurerm_resource_group.dev_rg.name
-
-  security_rule {
-    name                       = "allow-ssh-inbound-sg"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "Internet"
-    destination_address_prefix = azurerm_subnet.bastion_subnet.address_prefixes[0]
-  }
 
   security_rule {
     name                       = "allow-https-from-internet-inbound-sg"
@@ -181,6 +170,7 @@ resource "azurerm_network_security_group" "to_bastion" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "80"
+    # trivy:ignore:AZU-0051 Required by Azure Bastion to connect to outbound web
     source_address_prefix      = "*"
     destination_address_prefix = "Internet"
   }
