@@ -36,6 +36,20 @@ stages:
             displayName: 'Validate Terraform'
             workingDirectory: $(terraformDirectory)
 
+      - job: Security
+        displayName: 'Security Scan'
+        steps:
+          - task: trivy@2
+            name: TrivyCurrent
+            displayName: 'Scan current repository'
+            inputs:
+              version: 'latest'
+              type: 'filesystem'
+              target: '.'
+              scanners: 'misconfig,vuln,secret'
+              reports: 'html'
+              publish: true
+              
   - stage: Plan
     displayName: 'Plan Terraform'
     dependsOn: Validate
