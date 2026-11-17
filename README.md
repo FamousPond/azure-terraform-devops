@@ -22,7 +22,7 @@ All pipelines share variables from `pipelines/variables.yml` and use the `pipeli
  
 Runs on pull requests to `main` and on merges into `main`:
  
-1. **Validate:** checks Terraform formatting (`terraform fmt -check`) and validates the configuration.
+1. **Validate:** checks Terraform formatting (`terraform fmt -check`) and validates the configuration. It also runs Trivy to scan the Terraform configs for misconfigurations, secrets, and vulnerabilities. 
 2. **Plan:** creates a Terraform plan and publishes it as a pipeline artifact.
 3. **Apply:** on merge to `main` only, applies the saved plan through an ADO deployment environment.
 If validation or planning fails, the pull request is blocked from merging.
@@ -41,7 +41,6 @@ Most recent first.
 
 ##### Roadmap
 
-- Add an IaC security scan with Trivy into the validation step of the pipeline
 - Use Terraform modules
 - Authenticate the pipelines with OIDC
 - Automate the deployment of a simple webserver container on the machines
@@ -53,7 +52,7 @@ Most recent first.
 ### automated_test_4
 This test firstly added a Load Balancer in front of two web VMs, with an HTTP health probe. Unfortunately I can only deploy two VMs in one location with the free tier, so the load balancer now just goes to one machine.
 
-Secondly I added an IaC security scanner in Trivy to my deployment pipeline.  
+Secondly I added an IaC security scanner: Trivy, to my deployment pipeline. This security scan runs in parallel to the validation check and blocks merges when any issues are found. 
 
 Thirdly, I will refactor the configuration into Terraform modules.
 
