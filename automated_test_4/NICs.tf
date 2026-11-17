@@ -1,3 +1,4 @@
+# trivy:ignore:AZU-0068 NIC is associated with an ASG and that group then has an NSG
 resource "azurerm_network_interface" "web_1_nic" {
   name                = "web-1-nic"
   location            = var.location
@@ -25,6 +26,7 @@ resource "azurerm_network_interface" "web_2_nic" {
 }
 */
 
+# trivy:ignore:AZU-0068 NIC is associated with an ASG and that group then has an NSG
 resource "azurerm_network_interface" "backend_nic" {
   name                = "backend-nic"
   location            = var.location
