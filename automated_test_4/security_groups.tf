@@ -30,13 +30,13 @@ resource "azurerm_network_security_group" "to_web_machine" {
   }
 
   security_rule {
-    name                                       = "allow-http-from-internet-sg"
-    priority                                   = 100
-    direction                                  = "Inbound"
-    access                                     = "Allow"
-    protocol                                   = "Tcp"
-    source_port_range                          = "*"
-    destination_port_range                     = "8080"
+    name                   = "allow-http-from-internet-sg"
+    priority               = 100
+    direction              = "Inbound"
+    access                 = "Allow"
+    protocol               = "Tcp"
+    source_port_range      = "*"
+    destination_port_range = "8080"
     # trivy:ignore:AZU-0047 Required to let the users connect to the website
     source_address_prefix                      = "Internet"
     destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
@@ -79,13 +79,13 @@ resource "azurerm_network_security_group" "to_bastion" {
   resource_group_name = azurerm_resource_group.dev_rg.name
 
   security_rule {
-    name                       = "allow-https-from-internet-inbound-sg"
-    priority                   = 101
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "443"
+    name                   = "allow-https-from-internet-inbound-sg"
+    priority               = 101
+    direction              = "Inbound"
+    access                 = "Allow"
+    protocol               = "Tcp"
+    source_port_range      = "*"
+    destination_port_range = "443"
     # trivy:ignore:AZU-0047 Required by Azure Bastion to connect from Internet
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
@@ -164,14 +164,14 @@ resource "azurerm_network_security_group" "to_bastion" {
   }
 
   security_rule {
-    name                       = "allow-http-outbound-sg"
-    priority                   = 203
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
+    name                   = "allow-http-outbound-sg"
+    priority               = 203
+    direction              = "Outbound"
+    access                 = "Allow"
+    protocol               = "*"
+    source_port_range      = "*"
+    destination_port_range = "80"
+    source_address_prefix  = "*"
     # trivy:ignore:AZU-0051 Required by Azure Bastion to connect to outbound web
     destination_address_prefix = "Internet"
   }
