@@ -45,11 +45,11 @@ stages:
             inputs:
               version: 'latest'
               type: 'filesystem'
-              target: '.'
+              target: $(terraformDirectory)
               scanners: 'misconfig,vuln,secret'
               reports: 'html'
               publish: true
-              
+
   - stage: Plan
     displayName: 'Plan Terraform'
     dependsOn: Validate
