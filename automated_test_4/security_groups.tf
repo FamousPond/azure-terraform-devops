@@ -86,6 +86,7 @@ resource "azurerm_network_security_group" "to_bastion" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "443"
+    # trivy:ignore:AZU-0047 Required by Azure Bastion to connect from Internet
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
   }
@@ -170,8 +171,8 @@ resource "azurerm_network_security_group" "to_bastion" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "80"
-    # trivy:ignore:AZU-0051 Required by Azure Bastion to connect to outbound web
     source_address_prefix      = "*"
+    # trivy:ignore:AZU-0051 Required by Azure Bastion to connect to outbound web
     destination_address_prefix = "Internet"
   }
 }
