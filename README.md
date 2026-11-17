@@ -8,7 +8,7 @@ A personal project for learning to deploy Azure infrastructure with Terraform th
 
 | Tier | Resources | Access |
 |---|---|---|
-| Web | Two Ubuntu VMs behind a public Azure Load Balancer, with no public IPs of their own | HTTP (8080) from the internet through the load balancer, with an HTTP health probe; SSH only from Azure Bastion |
+| Web | Two Ubuntu VMs behind a public Azure Load Balancer, with no public IPs | HTTP (8080) from the internet through the load balancer, with an HTTP health probe; SSH only from Azure Bastion |
 | Backend | Ubuntu VM in a private subnet, outbound via a NAT gateway | Only from the web tier's application security group; SSH only from Azure Bastion |
 | Secrets | Key Vault behind a private endpoint, with public access disabled | Only the backend VM's managed identity, via RBAC (Key Vault Secrets User) |
  
@@ -39,15 +39,30 @@ Runs on a daily schedule and checks the Terraform state. If any resources are st
 
 Most recent first.
 
+##### Roadmap
+
+- Add an IaC security scan with Trivy into the validation step of the pipeline
+- Use Terraform modules
+- Authenticate the pipelines with OIDC
+- Automate the deployment of a simple webserver container on the machines
+- Include SAST in the pipeline with semgrep
+- Deploy web vms across multiple availability zones
+- Play with AKS
+ 
+
 ### automated_test_4
-This test  firstly added a Load Balancer in front of two web VMs, with an HTTP health probe and a load-balancing rule for port 8080. Next, I will refactor the configuration into Terraform modules.
+This test firstly added a Load Balancer in front of two web VMs, with an HTTP health probe. Unfortunately I can only deploy two VMs in one location with the free tier, so the load balancer now just goes to one machine.
+
+Secondly I added an IaC security scanner in Trivy to my deployment pipeline.  
+
+Thirdly, I will refactor the configuration into Terraform modules.
 
 ### automated_test_3
 This test is going to add another pipeline to monitor if I have left systems up overnight. It will run daily at 2 am and if I have left any systems up overnight it will alert me. This is to ensure I don't leave resources up when I am not using them.  
 
-The pipeline fails if there are resources up, and I have notifications setup in ADO to email me if this pipline fails. 
+The pipeline fails if there are resources up, and I have notifications setup in ADO to email me if this pipeline fails. 
 
-There wil be no folder for this as it is going to be put into the pipelines folder. 
+There will be no folder for this as it is going to be put into the pipelines folder. 
 
 
 ### automated_test_2
@@ -74,4 +89,4 @@ Both these pipelines get shared variables from the `pipelines/variables.yml` fil
 This test went a bit deeper. I used an Azure storage account to remotely store the Terraform config file, and I deployed two machines one of which had a public IP.
 
 ### manual_test_1
-This test was just to see how Terraform works and how to structure the configuration fies. I manually deployed it using the cli. 
+This test was just to see how Terraform works and how to structure the configuration files. I manually deployed it using the cli. 

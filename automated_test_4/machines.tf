@@ -41,6 +41,7 @@ resource "azurerm_linux_virtual_machine" "web_1_vm" {
   }
 }
 
+/* Removed due to VM limit
 resource "azurerm_linux_virtual_machine" "web_2_vm" {
   name                = "web-2-vm"
   resource_group_name = azurerm_resource_group.dev_rg.name
@@ -68,6 +69,7 @@ resource "azurerm_linux_virtual_machine" "web_2_vm" {
     version   = "latest"
   }
 }
+ */
 
 resource "azurerm_linux_virtual_machine" "backend_vm" {
   name                = "backend-vm"
