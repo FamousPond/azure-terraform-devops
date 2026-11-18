@@ -1,3 +1,17 @@
+# Private DNS zone for the key vault server
+resource "azurerm_private_dns_zone" "key_vault_dns" {
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = var.rg_name
+}
+
+# link the private DNS zone to the VNet
+resource "azurerm_private_dns_zone_virtual_network_link" "key_vault_dns_to_vnet" {
+  name                  = "link-key-vault-dns-to-vnet"
+  resource_group_name   = var.rg_name
+  private_dns_zone_name = azurerm_private_dns_zone.key_vault_dns.name
+  virtual_network_id    = var.vnet_id
+}
+
 # Random string to make the key vault name unique
 resource "random_string" "key_vault_suffix" {
   length  = 6
@@ -9,7 +23,7 @@ resource "random_string" "key_vault_suffix" {
 resource "azurerm_key_vault" "key_vault" {
   name                          = "tf-key-vault-${random_string.key_vault_suffix.result}"
   location                      = var.location
-  resource_group_name           = azurerm_resource_group.dev_rg.name
+  resource_group_name           = var.rg_name
   rbac_authorization_enabled    = true
   sku_name                      = "standard"
   tenant_id                     = data.azurerm_client_config.current.tenant_id
@@ -26,8 +40,8 @@ resource "azurerm_key_vault" "key_vault" {
 resource "azurerm_private_endpoint" "private_endpoint_to_key_vault" {
   name                = "private-endpoint-to-key-vault"
   location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
-  subnet_id           = azurerm_subnet.very_private_subnet.id
+  resource_group_name = var.rg_name
+  subnet_id           = var.kv_subnet_id
 
   private_service_connection {
     name                           = "psc-key_vault"
@@ -40,5 +54,4 @@ resource "azurerm_private_endpoint" "private_endpoint_to_key_vault" {
     name                 = "key-vault-dns"
     private_dns_zone_ids = [azurerm_private_dns_zone.key_vault_dns.id]
   }
-
 }
