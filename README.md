@@ -41,7 +41,6 @@ Most recent first.
 
 ##### Roadmap
 
-- Use Terraform modules
 - Authenticate the pipelines with OIDC
 - Automate the deployment of a simple webserver container on the machines
 - Include SAST in the pipeline with semgrep
@@ -54,7 +53,7 @@ This test firstly added a Load Balancer in front of two web VMs, with an HTTP he
 
 Secondly I added an IaC security scanner: Trivy, to my deployment pipeline. This security scan runs in parallel to the validation check and blocks merges when any issues are found. 
 
-Thirdly, I will refactor the configuration into Terraform modules.
+Thirdly, I refactored the Terraform config by creating modules. It is now a lot easier to add more machines to a subnet (if I had the compute credits). 
 
 ### automated_test_3
 This test is going to add another pipeline to monitor if I have left systems up overnight. It will run daily at 2 am and if I have left any systems up overnight it will alert me. This is to ensure I don't leave resources up when I am not using them.  
