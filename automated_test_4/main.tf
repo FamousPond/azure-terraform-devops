@@ -13,10 +13,6 @@ resource "azurerm_resource_group" "dev_rg" {
   location = var.location
 }
 
-module "providers" {
-  source = "./providers"
-}
-
 module "networking" {
   source = "./networking"
 
@@ -75,7 +71,7 @@ module "security" {
   rg_name  = azurerm_resource_group.dev_rg.name
   location = var.location
 
-  subnets           = { for subnet in module.networking.subnets : subnet.name => subnet.id }
+  subnets           = { for subnet in module.networking.subnets : subnet.name => subnet.id if contains(["web", "backend"], subnet.name) }
   vms               = module.compute.vms
   nat_gateway_id    = module.networking.nat_gateway_id
   bastion_subnet    = module.networking.subnets["AzureBastionSubnet"]

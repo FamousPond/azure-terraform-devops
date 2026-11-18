@@ -20,7 +20,7 @@ variable "machines" {
   description = "Map of the number of machines in each subnet zone"
 
   validation {
-    condition     = alltrue([for zone in var.machines : contains([for subnet in var.subnets : subnet], zone)])
+    condition     = alltrue([for zone, num_machines in var.machines : contains([for subnet in var.subnets : subnet], zone)])
     error_message = "Every zone in 'machines' has to have a corresponding zone in 'subnets'"
   }
 }

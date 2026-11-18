@@ -1,14 +1,13 @@
 # trivy:ignore:AZU-0068 NIC is associated with an ASG and that group then has an NSG
 locals {
   nics = tomap({ for nic in flatten([
-    for subnet in var.machines : [
-      for i in range(var.machines[subnet]) : {
+    for subnet, num_machines in var.machines : [
+      for i in range(num_machines) : {
         subnet = subnet,
         index  = i + 1
       }
     ]
-    ]
-    ) : "${nic.subnet}-${nic.index}" => nic
+    ]) : "${nic.subnet}-${nic.index}" => nic
   })
 }
 
