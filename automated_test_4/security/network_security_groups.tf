@@ -1,36 +1,11 @@
-# Application security groups
-resource "azurerm_application_security_group" "web_asg" {
-  name                = "web-asg"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
-}
-
-resource "azurerm_application_security_group" "backend_asg" {
-  name                = "backend-asg"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
-}
-
 # Network security groups
-resource "azurerm_network_security_group" "to_web_machine" {
-  name                = "to-web-machine-sg"
+resource "azurerm_network_security_group" "web_sg" {
+  name                = "web-sg"
   location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
+  resource_group_name = var.rg_name
 
   security_rule {
-    name                                       = "allow-ssh-from-bastion-sg"
-    priority                                   = 101
-    direction                                  = "Inbound"
-    access                                     = "Allow"
-    protocol                                   = "Tcp"
-    source_port_range                          = "*"
-    destination_port_range                     = "22"
-    source_address_prefixes                    = azurerm_subnet.bastion_subnet.address_prefixes
-    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
-  }
-
-  security_rule {
-    name                   = "allow-http-from-internet-sg"
+    name                   = "allow-http-internet"
     priority               = 100
     direction              = "Inbound"
     access                 = "Allow"
@@ -39,44 +14,94 @@ resource "azurerm_network_security_group" "to_web_machine" {
     destination_port_range = "8080"
     # trivy:ignore:AZU-0047 Required to let the users connect to the website
     source_address_prefix                      = "Internet"
-    destination_application_security_group_ids = [azurerm_application_security_group.web_asg.id]
+    destination_application_security_group_ids = [local.map_asgs["web"]]
   }
-}
-
-resource "azurerm_network_security_group" "to_backend_machine" {
-  name                = "to-backend-machine-sg"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
 
   security_rule {
-    name                                       = "allow-ssh-from-bastion-sg"
+    name                                       = "allow-lb-probe"
+    priority                                   = 101
+    direction                                  = "Inbound"
+    access                                     = "Allow"
+    protocol                                   = "Tcp"
+    source_port_range                          = "*"
+    destination_port_range                     = "8080"
+    source_address_prefix                      = "AzureLoadBalancer"
+    destination_application_security_group_ids = [local.map_asgs["web"]]
+  }
+
+  security_rule {
+    name                                       = "allow-bastion-ssh"
+    priority                                   = 102
+    direction                                  = "Inbound"
+    access                                     = "Allow"
+    protocol                                   = "Tcp"
+    source_port_range                          = "*"
+    destination_port_range                     = "22"
+    source_address_prefixes                    = var.bastion_subnet.address_prefixes
+    destination_application_security_group_ids = [local.map_asgs["web"]]
+  }
+
+  security_rule {
+    name                                       = "deny-inbound-vnet"
+    priority                                   = 4096
+    direction                                  = "Inbound"
+    access                                     = "Deny"
+    protocol                                   = "Any"
+    source_port_range                          = "*"
+    destination_port_range                     = "*"
+    source_address_prefix                      = "VirtualNetwork"
+    destination_application_security_group_ids = [local.map_asgs["web"]]
+  }
+
+}
+
+resource "azurerm_network_security_group" "backend_sg" {
+  name                = "backend-sg"
+  location            = var.location
+  resource_group_name = var.rg_name
+
+  security_rule {
+    name                                       = "allow-ssh-from-bastion"
     priority                                   = 100
     direction                                  = "Inbound"
     access                                     = "Allow"
     protocol                                   = "Tcp"
     source_port_range                          = "*"
     destination_port_range                     = "22"
-    source_address_prefixes                    = azurerm_subnet.bastion_subnet.address_prefixes
-    destination_application_security_group_ids = [azurerm_application_security_group.backend_asg.id]
+    source_address_prefixes                    = var.bastion_subnet.address_prefixes
+    destination_application_security_group_ids = [local.map_asgs["backend"]]
   }
 
   security_rule {
-    name                                       = "allow-from-web-machine-sg"
+    name                                       = "allow-from-web-machine"
     priority                                   = 101
     direction                                  = "Inbound"
     access                                     = "Allow"
     protocol                                   = "Tcp"
     source_port_range                          = "*"
     destination_port_range                     = "*"
-    source_application_security_group_ids      = [azurerm_application_security_group.web_asg.id]
-    destination_application_security_group_ids = [azurerm_application_security_group.backend_asg.id]
+    source_application_security_group_ids      = [local.map_asgs["web"]]
+    destination_application_security_group_ids = [local.map_asgs["backend"]]
   }
+
+  security_rule {
+    name                                       = "deny-inbound-vnet"
+    priority                                   = 4096
+    direction                                  = "Inbound"
+    access                                     = "Deny"
+    protocol                                   = "Any"
+    source_port_range                          = "*"
+    destination_port_range                     = "*"
+    source_address_prefix                      = "VirtualNetwork"
+    destination_application_security_group_ids = [local.map_asgs["backend"]]
+  }
+
 }
 
-resource "azurerm_network_security_group" "to_bastion" {
-  name                = "to-bastion-sg"
+resource "azurerm_network_security_group" "bastion_sg" {
+  name                = "bastion-sg"
   location            = var.location
-  resource_group_name = azurerm_resource_group.dev_rg.name
+  resource_group_name = var.rg_name
 
   security_rule {
     name                   = "allow-https-from-internet-inbound-sg"
