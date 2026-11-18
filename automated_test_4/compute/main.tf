@@ -1,4 +1,3 @@
-# trivy:ignore:AZU-0068 NIC is associated with an ASG and that group then has an NSG
 locals {
   nics = tomap({ for nic in flatten([
     for subnet, num_machines in var.machines : [
@@ -11,6 +10,7 @@ locals {
   })
 }
 
+# trivy:ignore:AZU-0068 NIC is associated with an ASG and that group then has an NSG
 resource "azurerm_network_interface" "nic" {
   for_each            = local.nics
   name                = "${each.key}-nic"
